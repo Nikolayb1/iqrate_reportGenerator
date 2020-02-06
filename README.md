@@ -4,7 +4,7 @@ Sample PDF generator with graphs. The graphs are created with matplot lib and sa
 
 ### Installation
 
-You might want to create a venv before downloading the dependencies:
+I recommend creating a venv before downloading the dependencies:
 
 ```sh
 $ pip install virtualenv
