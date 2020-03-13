@@ -1,0 +1,12 @@
+US:
+Minimmum value 205.052 on 1970
+Maximum value 327.167434 on 2018
+Mean 264.7815721020408
+UK:
+Minimmum value 55.66325 on 1970
+Maximum value 66.488991 on 2018
+Mean 59.016756
+ES:
+Minimmum value 33.814531 on 1970
+Maximum value 46.773055 on 2012
+Mean 40.565648857142854

@@ -1,5 +1,7 @@
 import sys
 import random
+import datetime
+import statistics
 
 import requests
 from fpdf import FPDF
@@ -10,10 +12,15 @@ from requests import HTTPError
 from html.parser import HTMLParser
 
 colours = [(31, 119, 180), (174, 199, 232), (255, 127, 14), (255, 187, 120), (44, 160, 44), (152, 223, 138), (214, 39, 40), (255, 152, 150)]
-title = "Athens - report for January 2019"
+
+hotel = "Athens"
+date = datetime.datetime(2019, 1, 1)
+title = hotel +" - report for " + date.strftime("%B") + " " + str(date.year)
+pdfTitle = hotel + "_Report_" + str(date.year) + str(date.month) + str(date.day)
+pdfTitle.replace(" ", "_")
+f = open("data.txt", "w")
+
 # create the pdf
-
-
 class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag == 'image':
@@ -60,7 +67,13 @@ def fetchUSdata():
             if data['value'] != None:
                 x.append(data['date'])
                 y.append(data['value']/1000000)
-
+        f.write("US:\n")
+        minimumI = y.index(min(y))
+        maximumI = y.index(max(y))
+        mean = statistics.mean(y)
+        f.write("Minimmum value "+ str(y[minimumI]) + " on " + str(x[minimumI])+"\n")
+        f.write("Maximum value "+ str(y[maximumI]) + " on " + str(x[maximumI])+"\n")
+        f.write("Mean " + str(mean) + "\n")
         return x, y, country
 
 
@@ -88,7 +101,13 @@ def fetchUKdata():
             if data['value'] != None:
                 x.append(data['date'])
                 y.append(data['value']/1000000)
-
+        f.write("UK:\n")
+        minimumI = y.index(min(y))
+        maximumI = y.index(max(y))
+        mean = statistics.mean(y)
+        f.write("Minimmum value "+ str(y[minimumI]) + " on " + str(x[minimumI])+"\n")
+        f.write("Maximum value "+ str(y[maximumI]) + " on " + str(x[maximumI])+"\n")
+        f.write("Mean " + str(mean) + "\n")
         return x, y, country
 
 
@@ -116,7 +135,13 @@ def fetchESdata():
             if data['value'] != None:
                 x.append(data['date'])
                 y.append(data['value']/1000000)
-
+        f.write("ES:\n")
+        minimumI = y.index(min(y))
+        maximumI = y.index(max(y))
+        mean = statistics.mean(y)
+        f.write("Minimmum value "+ str(y[minimumI]) + " on " + str(x[minimumI])+"\n")
+        f.write("Maximum value "+ str(y[maximumI]) + " on " + str(x[maximumI])+"\n")
+        f.write("Mean " + str(mean) + "\n")
         return x, y, country
 
 
@@ -204,4 +229,7 @@ if __name__== "__main__":
     x, y, id = fetchESdata()
     img = createGraph(x, y, id)
 
-    pdf.output('Report.pdf', 'F')
+    pdf.output(pdfTitle+".pdf", 'F')
+
+    print(pdfTitle)
+    f.close()
