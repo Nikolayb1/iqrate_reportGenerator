@@ -9,37 +9,43 @@ var events = require('events');
 const Queue = require('bull');
 var redis = require('redis');
 var client = redis.createClient();
+const {parse, stringify} = require('flatted/cjs');
 
 var eventEmitter = new events.EventEmitter();
+
+
 
 var count = 0
 
 const queueScript = new Queue('queueScript');
 
-queueScript.process(async job => {
-    eventEmitter.emit('generateReport', job.res);
-  })
-
-var generateReport = function(res){
+queueScript.process(function (job, done){
+    
     var dataToSend;
-    const python = spawn('python', ['main.py']);
+    const python = spawn('python3', ['main.py']);
 
     python.stdout.on('data', function (data) {
         console.log('Pipe data from python script ...');
-        dataToSend = data.slice(0, -2); 
-    });
 
-    python.on('close', (code) => {
-        console.log(`child process close all stdio with code ${code}`);
+
+        dataToSend = data.slice(0, -1); 
+    });
+    python.on('close', function (code) {
+
+        console.log(`child process close all stdio with code `);
+        done(null, { name: dataToSend+'.pdf' });
         // send data to browser
-        var file = fs.createReadStream('./' + dataToSend+'.pdf');
-        var stat = fs.statSync('./' + dataToSend+'.pdf');
-        res.setHeader('Content-Length', stat.size);
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename='+dataToSend+'.pdf');
-        file.pipe(res);
+       
+        
         
     });
+  })
+  
+
+var generateReport = function(){
+    
+    
+    
 }
 
 eventEmitter.on('generateReport', generateReport);
@@ -48,8 +54,23 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 })
 
-app.post('/generate-report', function (req, res) {
-    queueScript.add(res);
+app.post('/generate-report', async (req, res) =>{
+    
+    
+    const job = await queueScript.add({});
+    console.log(job.id);
+    queueScript.on('completed', function(job, result){
+        console.log(result);
+        console.log(`child process close all stdio with code`);
+        // send data to browser
+        var file = fs.createReadStream(result.name);
+        var stat = fs.statSync(result.name);
+        res.setHeader('Content-Length', stat.size);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename='+result.name);
+        file.pipe(res);
+      })
+    
     
     //res.send("Done");
 })

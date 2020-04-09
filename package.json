@@ -1,0 +1,27 @@
+{
+  "name": "iqrate_reportgenerator",
+  "version": "1.0.0",
+  "description": "Sample PDF generator with graphs. The graphs are created with matplot lib and saved as PNG image to be later inserted into the pdf file. The data is fetched from world bank and represent population of US, UK and Spain. The pdf file is generated using FPDF.",
+  "main": "index.js",
+  "dependencies": {
+    "bull": "^3.13.0",
+    "chromedriver": "^80.0.2",
+    "express": "^4.17.1",
+    "flatted": "^2.0.1",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nikolay685/iqrate_reportGenerator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nikolay685/iqrate_reportGenerator/issues"
+  },
+  "homepage": "https://github.com/Nikolay685/iqrate_reportGenerator#readme"
+}
